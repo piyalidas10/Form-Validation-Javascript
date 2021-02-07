@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="validation.js"></script>
+  <style>
+    .invalid-feedback {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Form</h2>
+
+  <form id="form1">
+    <div class="form-group">
+      <label for="fname">First Name:</label>
+      <input type="text" class="form-control" id="fname" placeholder="Enter email" name="fname" onfocusout="inputHandler(this)" pattern="[a-zA-Z]{3,30}" validate>
+    </div>
+    <div class="form-group">
+        <label for="mname">Middle Name:</label>
+        <input type="text" class="form-control" id="mname" placeholder="Enter email" name="mname" onfocusout="inputHandler(this)" pattern="[a-zA-Z]{3,30}">
+    </div>
+    <div class="form-group">
+        <label for="lname">Last Name:</label>
+        <input type="text" class="form-control" id="lname" placeholder="Enter email" name="lname" onfocusout="inputHandler(this)" pattern="[a-zA-Z]{3,30}" validate>
+    </div>
+    <div class="form-group">
+      <label for="mobile">Mobile:</label>
+      <input type="text" class="form-control" id="mobile" placeholder="Enter mobile" name="mobile" onfocusout="inputHandler(this)" pattern="[0-9]{10}" validate>
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" pattern="[a-zA-Z]+@[a-z]+\.[a-z]{2,4}" onfocusout="inputHandler(this)" validate>
+    </div>
+    <div class="form-group">
+      <label for="pwd">Password:</label>
+      <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd" onfocusout="inputHandler(this)" validate>
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender:</label>
+      <div class="form-check-inline">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="gender" id="male" value="male" onfocusout="inputHandler(this)" >Male
+        </label>
+      </div>
+      <div class="form-check-inline">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="gender" id="female" value="female" onfocusout="inputHandler(this)" validate>Female
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="gender">Type:</label>
+      <div class="form-check-inline">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="type" id="free" value="free"  onfocusout="inputHandler(this)" >Free
+        </label>
+      </div>
+      <div class="form-check-inline">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="type" id="premium" value="premium"  onfocusout="inputHandler(this)" validate>Premium
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="gender">City:</label>
+      <select class="form-control" id="city" onfocusout="inputHandler(this)" validate>
+        <option value="-1">Select</option>
+        <option value="0">Kolkata</option>
+        <option value="1">Mumbai</option>
+        <option value="2">Bangalore</option>
+        <option value="3">Delhi</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="gender">Comments:</label>
+      <textarea class="form-control" id="comment" onfocusout="inputHandler(this)" validate></textarea>
+    </div>  
+    <div class="form-group form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="checkbox" name="remember"> Remember me
+      </label>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="validateFormHandler(this)">Submit</button>
+  </form>
+
+
+</div>
+
+</body>
+</html>
