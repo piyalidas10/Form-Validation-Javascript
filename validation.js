@@ -1,3 +1,17 @@
+var errorJson;
+window.onload = function () {
+    errorJson = httpGet("https://raw.githubusercontent.com/piyalidas10/Form-Validation-Javascript/master/formErrors.json");
+    console.log(errorJson);
+}
+
+function httpGet(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    xmlHttp.send( null );
+    return JSON.parse(xmlHttp.responseText);
+}
+
 function validateFormHandler(element) {
     console.log(element);
     let form = element.closest("form");
@@ -14,11 +28,6 @@ function isValidForm(form) {
     let textAreaFields = form.querySelectorAll('textarea');
     let radioFields = form.querySelectorAll('input[type="radio"]');
     let selectFields = form.querySelectorAll('select');
-    console.log(textFields);
-    console.log(emailFields);
-    console.log(textAreaFields);
-    console.log(selectFields);
-    console.log(radioFields);
     let validTextfields = textFields.length == 0 ? true : validateFields(textFields, 'text');
     let validPasswordfields = passwordFields.length == 0 ? true : validateFields(passwordFields, 'password');
     let validEmail = emailFields.length == 0 ? true : validateFields(emailFields, 'email');
@@ -58,16 +67,12 @@ function validationRadioScope(element) {
             allNames.push(obj);
         }
     }
-    console.log('allNames => ', allNames);
     let groupedRadio = groupBy(allNames, 'name');
     let groupedRadioArr = Object.values(groupedRadio);
-    console.log('groupedRadioArr => ', groupedRadioArr);
     groupedRadioArr.forEach(radioGroup => {
         let hasRequired = radioGroup.filter(radio => radio.required === true);
-        console.log('hasRequired => ', hasRequired);
         if (hasRequired.length > 0) {
             let radios = document.getElementsByName(radioGroup[0].name);
-            console.log('radios => ', radios);
             setFlag = checkRadioSelection(radios);
         }
     });
@@ -82,9 +87,9 @@ function checkRadioSelection(radios) {
         }
     });
     if (!setFlag) {
-        displayError("invalid", radios[0]);
+        displayError("invalid", radios[0], 'required');
     } else {
-        displayError("valid", radios[0]);
+        displayError("valid", radios[0], 'required');
     }
     return setFlag;
 }
@@ -112,7 +117,7 @@ function validationCommonScope(element, eventType) {
     }
     console.log(regexAttr, regexValue);
     if (requiredAttr && (fieldValue === "" | fieldValue === "-1")) {
-        displayError("invalid", element);
+        displayError("invalid", element, 'required');
         setFlag = false;
     } else {
         matchPattern(element, regexValue, setFlag, eventType);        
@@ -126,13 +131,13 @@ function matchPattern(element, regexValue, setFlag, eventType) {
             var regexFormat = new RegExp(regexValue);
             console.log(regexFormat.test(element.value));
             if (regexFormat.test(element.value)) {
-                displayError("valid", element);
+                displayError("valid", element, 'pattern');
             } else {
-                displayError("invalid", element);
+                displayError("invalid", element, 'pattern');
                 setFlag = false;
             }
         } else {
-            displayError("valid", element);
+            displayError("valid", element, 'pattern');
         }
     }
     return setFlag;
@@ -150,7 +155,7 @@ function inputHandler(element) {
     }
 }
 
-function displayError(type, element) {
+function displayError(type, element, errorName) {    
     console.log(element);
     let parentElem = element.closest('.form-group');
     let isErrorExist = parentElem.querySelector('.invalid-feedback');
@@ -159,12 +164,22 @@ function displayError(type, element) {
             parentElem.querySelector('.invalid-feedback').remove();
         }
     } else {
-        if (isErrorExist) {
-            isErrorExist.innerText = "error";
+        let getError = errorJson.find(error => error.name === errorName);
+        console.log('getError => ', getError);
+        if (isErrorExist) {         
+            if (errorName === 'required') {
+                isErrorExist.innerText = element?.name + " " + getError?.desc;
+            } else {
+                isErrorExist.innerText = getError?.desc;
+            } 
         } else {
             let errorDiv = document.createElement("div");
             errorDiv.classList.add('invalid-feedback');
-            errorDiv.innerText = "error";
+            if (errorName === 'required') {
+                errorDiv.innerText = element?.name + " " + getError?.desc;
+            } else {
+                errorDiv.innerText = getError?.desc;
+            }
             parentElem.appendChild(errorDiv);
         }        
     }
