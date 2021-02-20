@@ -28,13 +28,15 @@ function isValidForm(form) {
     let textAreaFields = form.querySelectorAll('textarea');
     let radioFields = form.querySelectorAll('input[type="radio"]');
     let selectFields = form.querySelectorAll('select');
+    let checkboxFields = form.querySelectorAll('input[type="checkbox"]');
     let validTextfields = textFields.length == 0 ? true : validateFields(textFields, 'text');
     let validPasswordfields = passwordFields.length == 0 ? true : validateFields(passwordFields, 'password');
     let validEmail = emailFields.length == 0 ? true : validateFields(emailFields, 'email');
     let validtxtArea = textAreaFields.length == 0 ? true : validateFields(textAreaFields, 'textarea');
-    let validRadio = selectFields.length == 0 ? true : validateFields(radioFields, 'radio');
+    let validRadio = radioFields.length == 0 ? true : validateFields(radioFields, 'radio');
     let validSelect = selectFields.length == 0 ? true : validateFields(selectFields, 'select');
-    if (validTextfields && validtxtArea && validSelect && validEmail && validPasswordfields && validRadio) {
+    let validCheckbox = checkboxFields.length == 0 ? true : validateFields(checkboxFields, 'checkbox');
+    if (validTextfields && validtxtArea && validSelect && validEmail && validPasswordfields && validRadio && validCheckbox) {
         return true;
     }
     return false;
@@ -47,6 +49,12 @@ function validateFields(fields, fieldType) {
         if (!validationRadioScope(fields)) {
             setFlag = false;
         }
+    } else if (fieldType === 'checkbox') {
+        fields.forEach(element => {
+            if (!validationCheckboxScope(element, 'formSubmit')) {
+                setFlag = false;
+            }
+        });
     } else {
         fields.forEach(element => {
             if (!validationCommonScope(element, 'formSubmit')) {
@@ -76,6 +84,18 @@ function validationRadioScope(element) {
             setFlag = checkRadioSelection(radios);
         }
     });
+    return setFlag;
+}
+
+function validationCheckboxScope(element) {
+    let setFlag = false;
+    let requiredAttr = element.hasAttribute("validate");
+    if (requiredAttr && element.checked) {
+        setFlag = true;
+        displayError("valid", element, 'required');
+    } else {
+        displayError("invalid", element, 'required');
+    }
     return setFlag;
 }
 
@@ -148,8 +168,9 @@ function inputHandler(element) {
     let inputType = element.getAttribute("type");
     if (inputType === 'radio') {
         let radios = document.getElementsByName(element.name);
-        console.log('radios => ', radios);
         checkRadioSelection(radios);
+    } else if (inputType === 'checkbox') {
+        validationCheckboxScope(element, 'inputChange');
     } else {
         validationCommonScope(element, 'inputChange');
     }
